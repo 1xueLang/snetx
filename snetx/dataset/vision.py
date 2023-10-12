@@ -12,7 +12,7 @@ def mnist_dataset(data_dir, batch_size, test_batch_size, transforms=None):
             torchvision.transforms.Normalize(0.1307, 0.3081),
         ])
 
-        transform_test = transforms.Compose([
+        transform_test = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(0.1307, 0.3081),
         ])
