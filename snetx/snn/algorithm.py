@@ -58,22 +58,23 @@ class Tosnn(nn.Module):
 
 # TET Loss
 def TETLoss(criterion, target, output, lamb=1e-3):
-    r_target = repeat(target, output.shape[1])
-    
+    r_target = temporal_repeat(target, output.shape[1])
+    #
     loss1 = criterion(output.mean(dim=1), target)
     loss2 = criterion(output.flatten(0, 1), r_target.flatten(0, 1))
     return lamb * loss1 + (1 - lamb) * loss2
 
 class TET(object):
-    def __init__(self, criterion):
+    def __init__(self, criterion, lamb=1e-3):
         self.criterion = criterion
+        self.lamb = lamb
         
     def __call__(self, x, y):
-        return TETLoss(self.criterion, y, x)
+        return TETLoss(self.criterion, y, x, self.lamb)
 
 
 # encoding
-def repeat(x, T):
+def temporal_repeat(x, T):
     x = x.unsqueeze(dim=1)
     r_size = [1] * len(x.shape)
     r_size[1] = T
@@ -84,6 +85,6 @@ class DirectEncoder(object):
         self.T = T
     
     def __call__(self, x):
-        return repeat(x, self.T)
+        return temporal_repeat(x, self.T)
 
     
