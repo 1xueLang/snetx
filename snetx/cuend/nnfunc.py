@@ -32,13 +32,15 @@ class stbpLIF(torch.autograd.Function):
     neuron_BP = cu_module.get_function(funclists[1])
     
     @staticmethod
-    def forward(ctx, 
-                inputs: torch.Tensor, 
-                tau: float, 
-                v_th: float, 
-                v_reset: float, 
-                suro: int, 
-                alpha: float) -> torch.Tensor:
+    def forward(
+        ctx, 
+        inputs: torch.Tensor, 
+        tau: float, 
+        v_th: float, 
+        v_reset: float, 
+        suro: int, 
+        alpha: float
+    ) -> torch.Tensor:
         r"""
         Args:
             inputs (Tensor): Input from pre-synapses.
@@ -104,13 +106,15 @@ class detachedLIF(torch.autograd.Function):
     neuron_BP = cu_module.get_function(funclists[1])
     
     @staticmethod
-    def forward(ctx, 
-                inputs: torch.Tensor, 
-                tau: float, 
-                v_th: float, 
-                v_reset: float, 
-                suro: int, 
-                alpha: float) -> torch.Tensor:
+    def forward(
+        ctx, 
+        inputs: torch.Tensor, 
+        tau: float, 
+        v_th: float, 
+        v_reset: float, 
+        suro: int, 
+        alpha: float
+    ) -> torch.Tensor:
         r"""
         Args:
             inputs (Tensor): Input from pre-synapses.

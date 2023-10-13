@@ -69,7 +69,7 @@ class TET(object):
         self.criterion = criterion
         self.lamb = lamb
         
-    def __call__(self, x, y):
+    def __call__(self, y, x):
         return TETLoss(self.criterion, y, x, self.lamb)
 
 

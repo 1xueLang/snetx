@@ -7,7 +7,6 @@ fastrlock==0.8
 fonttools==4.39.3
 importlib-resources==5.12.0
 kiwisolver==1.4.4
-matplotlib==3.7.1
 msgpack==1.0.5
 ninja==1.11.1
 numexpr==2.8.4
@@ -21,9 +20,8 @@ PyYAML==6.0
 six==1.16.0
 tables==3.8.0
 termcolor==2.3.0
-torch>=1.8.1+cu101
+torch>=1.8.1
 torchaudio>=0.8.1
-torchvision>=0.9.1+cu101
-tqdm==4.65.0
+torchvision>=0.9.1
 typing_extensions==4.5.0
 zipp==3.15.0
