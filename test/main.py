@@ -5,6 +5,7 @@ import snetx
 from snetx.dataset import vision
 from snetx.snn import algorithm as snnalgo
 from snetx.snn import neuron
+# from snetx.cuend import neuron
 from snetx.models import svggnet
 
 class MNISTNet(nn.Module):
@@ -42,11 +43,11 @@ if __name__ == '__main__':
     batch_size1 = 100
     batch_size2 = 100
     lr = 1e-3
-    
+    device = torch.device('cuda')
     snetx.utils.seed_all()
     
     ds1, ds2 = vision.mnist_dataset(data_dir, batch_size1, batch_size2)
-    net = MNISTNet(T).to(0)
+    net = MNISTNet(T).to(device)
     optimizer = torch.optim.AdamW(net.parameters(), lr=lr)
     criterion = snnalgo.TET(torch.nn.CrossEntropyLoss())
     # criterion = snnalgo.TET(torch.nn.MSELoss())
@@ -57,14 +58,14 @@ if __name__ == '__main__':
         total = 0.0
         
         for i, (x, y) in enumerate(ds1):
-            x = x.to(0)
-            y = y.to(0)
+            x = x.to(device)
+            y = y.to(device)
             # y = torch.nn.functional.one_hot(y, 10).to(x)
             
             optimizer.zero_grad()
             
             out = net(x)
-            loss = criterion(out, y)
+            loss = criterion(y, out)
             loss.backward()
             
             optimizer.step()
@@ -72,6 +73,6 @@ if __name__ == '__main__':
             total += out.shape[0]
             correct += out.mean(dim=1).argmax(dim=1).eq(y).sum()
             
-            if (1 + i) % 100 == 0:
+            if (1 + i) % 10 == 0:
                 print(loss.item()) 
                 print(correct / total)

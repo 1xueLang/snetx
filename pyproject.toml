@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools",]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "snetx"
+version = "0.1.1"
+authors = [
+    {name = "Lang Xue", email = "202221080723@std.uestc.edu.cn"},
+]
+maintainers= [
+    {name = "Lang Xue", email = "202221080723@std.uestc.edu.cn"},
+]
+description = "Package for quickly building spiking neural network."
+readme = "readme.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = ['termcolor']
+
+license = {file = "LICENSE"}
+
+
+[tool.setuptools]
+include-package-data = true
+
+
+[project.urls]
+"Homepage" = "https://github.com/1xueLang/snetx"
+"Documentation" = "https://github.com/1xueLang/snetx/blob/main/readme.md"
+"Repository" = "https://github.com/1xueLang/snetx.git"
+"Bug Tracker" = "https://github.com/1xueLang/snetx/issues"
