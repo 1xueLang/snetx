@@ -31,6 +31,6 @@ include-package-data = true
 
 [project.urls]
 "Homepage" = "https://github.com/1xueLang/snetx"
-"Documentation" = "https://github.com/1xueLang/snetx/blob/0.1.1/readme.md"
+"Documentation" = "https://github.com/1xueLang/snetx/blob/0.1.2/readme.md"
 "Repository" = "https://github.com/1xueLang/snetx.git"
 "Bug Tracker" = "https://github.com/1xueLang/snetx/issues"
