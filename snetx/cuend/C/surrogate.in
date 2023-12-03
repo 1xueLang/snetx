@@ -15,6 +15,9 @@
 #define __SURO_FUNC_3(x, alpha)                                  \
     sg = alpha / 2 / (1 + powf(CUDART_PI_F / 2 * alpha * x, 2));
 
+// arctan
+#define __SURO_FUNC_4(x, alpha)                                  \
+    sg = float(abs(x) < (1.0f / alpha)) * (alpha - powf(alpha, 2) * abs(x));
 
 
 //
@@ -31,4 +34,6 @@
     __surrogate_gradient_function_(2, over_th, alpha) break;     \
     case 3:                                                      \
     __surrogate_gradient_function_(3, over_th, alpha) break;     \
+    case 4:                                                      \
+    __surrogate_gradient_function_(4, over_th, alpha) break;     \
     }

@@ -6,7 +6,7 @@ from snetx.dataset import vision
 from snetx.snn import algorithm as snnalgo
 from snetx.snn import neuron
 # from snetx.cuend import neuron
-from snetx.models import svggnet
+from snetx.snetx.models import vgg
 
 class MNISTNet(nn.Module):
     def __init__(self, T):

@@ -1,7 +1,10 @@
 import os
 import torch
 import torchvision
-import PIL
+
+from spikingjelly.datasets.cifar10_dvs import CIFAR10DVS
+from spikingjelly.datasets.dvs128_gesture import DVS128Gesture
+from .. import dvs_transform
 
 from snetx import utils
 
@@ -102,6 +105,8 @@ def Fmnist_dataset(data_dir, batch_size, test_batch_size, transforms=None):
     )
     return train_data_loader, test_data_loader
 
+########### real time
+
 def cifar10_dataset(data_dir, batch_size, test_size, transforms=None):
     if transforms == None:
         transform_train = torchvision.transforms.Compose([
@@ -114,7 +119,7 @@ def cifar10_dataset(data_dir, batch_size, test_size, transforms=None):
             torchvision.transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
 
-        transform_test = transforms.Compose([
+        transform_test = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
@@ -165,6 +170,7 @@ def cifar100_dataset(data_dir, batch_size, test_batch_size, transforms=None):
             torchvision.transforms.RandomCrop(32, padding=4),
             torchvision.transforms.RandomHorizontalFlip(0.5),
             torchvision.transforms.ToTensor(),
+            utils.Cutout(1, 16),
             normalize
         ])
         
@@ -211,4 +217,70 @@ def cifar100_dataset(data_dir, batch_size, test_batch_size, transforms=None):
         drop_last=False,
         pin_memory=True
     )
+    return train_data_loader, test_data_loader
+
+
+def imagenet_dataset(data_dir, batch_size, test_batch_size, transform=None):
+    if transform:
+        transform_train, transform_test = transform
+    else:
+        transform_train = torchvision.transforms.Compose([
+            torchvision.transforms.RandomResizedCrop(224),
+            torchvision.transforms.AutoAugment(),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+        transform_test = torchvision.transforms.Compose([
+            torchvision.transforms.Resize(256),
+            torchvision.transforms.CenterCrop(224),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+    tr_set = torchvision.datasets.ImageFolder(
+        os.path.join(data_dir, 'train'),
+        transform=transform_train
+    )
+    ts_set = torchvision.datasets.ImageFolder(
+        os.path.join(data_dir, 'val'),
+        transform=transform_test
+    )
+    train_sampler = torch.utils.data.distributed.DistributedSampler(tr_set)
+    
+    return torch.utils.data.DataLoader(tr_set, sampler=train_sampler, num_workers=16, batch_size=batch_size, pin_memory=True), \
+        torch.utils.data.DataLoader(ts_set, shuffle=False, num_workers=16, batch_size=test_batch_size, pin_memory=True)
+
+
+
+########### DVS
+
+def cifar10dvs_dataset(data_dir, batch_size1, batch_size2, T):
+    transform_train = torchvision.transforms.Compose([
+        dvs_transform.ToTensor(),
+        torchvision.transforms.Resize(size=(48, 48)),
+        torchvision.transforms.RandomCrop(48, padding=4),
+        torchvision.transforms.RandomHorizontalFlip(),])
+        # transforms.Normalize(mean=[n / 255. for n in [129.3, 124.1, 112.4]],std=[n / 255. for n in [68.2, 65.4, 70.4]]),
+        # Cutout(n_holes=1, length=16)])
+
+    transform_test = torchvision.transforms.Compose([
+        dvs_transform.ToTensor(),
+        torchvision.transforms.Resize(size=(48, 48))])
+        # transforms.Normalize(mean=[n / 255. for n in [129.3, 124.1, 112.4]], std=[n / 255. for n in [68.2, 65.4, 70.4]])
+    trainset = CIFAR10DVS(root=data_dir, train=True, data_type='frame', frames_number=T, split_by='number', transform=transform_train)
+    testset = CIFAR10DVS(root=data_dir, train=False, data_type='frame', frames_number=T, split_by='number',  transform=transform_test)
+    train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
+    train_data_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size1, sampler=train_sampler, num_workers=2)
+    test_data_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size2, shuffle=False, num_workers=2)
+    return train_data_loader, test_data_loader
+
+
+def dvs128gesture_dataset(data_dir, batch_size1, batch_size2, T):
+    trainset = DVS128Gesture(data_dir, train=True, data_type='frame', frames_number=T, split_by='number', 
+                             transform=torchvision.transforms.Compose([dvs_transform.SkipFrames(T), dvs_transform.GestureRoll(T)]))
+    train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
+    
+    train_data_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size1, sampler=train_sampler, num_workers=2)
+    
+    testset = DVS128Gesture(data_dir, train=False, data_type='frame', frames_number=T, split_by='number')
+    test_data_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size2, shuffle=False, num_workers=2)
     return train_data_loader, test_data_loader

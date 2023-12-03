@@ -7,6 +7,7 @@ REGISTERED_SG_FUNCLIST = {
     'LeakyReLU': 1,
     'sigmoid': 2,
     'arctan': 3,
+    'PiecewiseQuadratic': 4
 }
 
 # 
@@ -23,8 +24,8 @@ class BasicCuNeuron(nn.Module):
         self, 
         v_th: float = 1.0, 
         v_reset: float = 0.0, 
-        sg: str = 'arctan', 
-        alpha: float = 4.0
+        sg: str = 'PiecewiseQuadratic', 
+        alpha: float = 1.0
     ) -> None:
         super().__init__()
         self.v_th = v_th
@@ -44,8 +45,8 @@ class LIF(BasicCuNeuron):
         tau: float = 2.0, 
         v_th: float = 1.0, 
         v_reset: float = 0.0, 
-        sg: str = 'arctan', 
-        alpha = lambda : 4.0,
+        sg: str = 'PiecewiseQuadratic', 
+        alpha = lambda : 1.0,
         detach: bool = False
     ) -> None:
         super().__init__(v_th, v_reset, sg, alpha)
@@ -62,8 +63,8 @@ class IF(LIF):
         self, 
         v_th: float = 1.0, 
         v_reset: float = 0.0, 
-        sg: str = 'arctan', 
-        alpha = lambda : 4.0, 
+        sg: str = 'PiecewiseQuadratic', 
+        alpha = lambda : 1.0, 
         detach: bool = False
     ) -> None:
         super().__init__(1.0, v_th, v_reset, sg, alpha, detach)
