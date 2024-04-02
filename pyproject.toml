@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools",]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "snetx"
+version = "0.2.0"
+authors = [
+    {name = "Lang Xue", email = "202221080723@std.uestc.edu.cn"},
+]
+maintainers= [
+    {name = "Lang Xue", email = "202221080723@std.uestc.edu.cn"},
+]
+description = "Version 0.2.0, add resnet modules and neuron warmup."
+readme = "readme.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+license = {file = "LICENSE"}
+
+
+[tool.setuptools]
+include-package-data = true
+
+
+[project.urls]
+"Homepage" = "https://github.com/1xueLang/snetx"
+"Documentation" = "https://github.com/1xueLang/snetx/blob/0.2.0/readme.md"
+"Repository" = "https://github.com/1xueLang/snetx.git"
+"Bug Tracker" = "https://github.com/1xueLang/snetx/issues"

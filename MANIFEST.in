@@ -1,0 +1,2 @@
+include snetx/cuend/C/neuron.cu
+include snetx/cuend/C/surrogate.in
